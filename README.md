@@ -1,0 +1,1 @@
+# devops-archetype-golang
