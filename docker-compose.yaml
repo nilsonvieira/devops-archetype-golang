@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:latest
+    container_name: goapi_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: goapi
+      MYSQL_USER: goapi_user
+      MYSQL_PASSWORD: goapi_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  api:
+    image: golang:latest
+    container_name: goapi_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      DB_USER: goapi_user
+      DB_PASSWORD: goapi_password
+      DB_HOST: db
+      DB_NAME: goapi
+    volumes:
+      - .:/app
+    working_dir: /app
+
+volumes:
+  db_data:
